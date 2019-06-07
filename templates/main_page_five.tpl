@@ -11,14 +11,6 @@
         <input hidden="" name="ID" value="%ID%">
         <div class="box-body">
             <div class="form-group">
-                <label class="control-label col-md-3">Тип дерева</label>
-                <div class="col-md-9">
-                    %TYPE%
-                </div>
-            </div>
-        </div>
-        <div class="box-body">
-            <div class="form-group">
                 <label class="control-label col-md-3">Сорт дерева</label>
                 <div class="col-md-9">
                     %SORT%

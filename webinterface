@@ -385,7 +385,7 @@ sub search_tree {
 
 
       push @fields_array, ($html->button($lang{CHANGE},
-          "index=$index&ID=$line->{id}&EXT_ID=$line->{ext_id}&SPECIES=$line->{species}&AGE=$line->{age}&COORDX=$line->{coordx}&COORDY=$line->{coordy}&STATUS_EDIT=$line->{status}&COMMENT=$line->{comment}&EDIT=1"._translate($line->{position} ),
+          "index=$index&ID=$line->{id}&TYPE_TREE=$line->{type_of_tree}&EXT_ID=$line->{ext_id}&SPECIES=$line->{species}&AGE=$line->{age}&COORDX=$line->{coordx}&COORDY=$line->{coordy}&STATUS_EDIT=$line->{status}&COMMENT=$line->{comment}&EDIT=1"._translate($line->{position} ),
           { class => 'change' } ));
         push @fields_array, ($html->button($lang{DELETE},
           "index=$index&del=$line->{id}"._translate($line->{position} ),
