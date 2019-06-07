@@ -1,4 +1,4 @@
-<div class="box box-success">
+<div class="box box-success no-padding"">
   <div class="box-header with-border">
     <h3 class="box-title">Пошук дерева</h3>
     <div class="box-tools pull-right">
