@@ -1,20 +1,16 @@
 #Iner_ID : Main or Sub or if -1 user menu func list
 %FUNCTIONS_LIST = (
   "01:0:$lang{TREE}:null:"                              => 1,
-  "02:1:$lang{ADD_TYPE}:add_type:"                      => 1,
-  "03:1:$lang{ADD_SORT}:add_sort:"                      => 1,
+  "02:1:$lang{TYPES}:add_type:"                      => 1,
+  "03:1:$lang{SORTS}:add_sort:"                      => 1,
   "04:1:$lang{SEARCH_TREE}:search_tree:"                => 1,
     "05:1:$lang{ADD_TREE}:add_trees:"                     => 1,
 );
 
 %USER_FUNCTION_LIST = (
 "01:0:$lang{TREE}:null:"                              => 1,
-    "02:1:$lang{ADD_TYPE}:add_type:"                      => 1,
-    "03:1:$lang{ADD_SORT}:add_sort:"                      => 1,
+    "02:1:$lang{TYPES}:add_type:"                      => 1,
+    "03:1:$lang{SORTS}:add_sort:"                      => 1,
     "04:1:$lang{SEARCH_TREE}:search_tree:"                => 1,
     "05:1:$lang{ADD_TREE}:add_trees:"                     => 1,
-  #"01:0:$lang{TREE}:null:"                              => 1,
-  #"02:1:$lang{ADD_TYPE}:add_type:"                      => 1,
-  #"03:1:$lang{ADD_SORT}:add_sort:"                      => 1,
-  #"04:1:$lang{SEARCH_TREE}:search_tree:"                => 1,
 );

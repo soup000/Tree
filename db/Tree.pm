@@ -225,7 +225,7 @@ sub species_list {
   my $DESC        = ($attr->{DESC}) ? $attr->{DESC} : '';
 
   $self->query2(
-      "SELECT trees_species.id, type_of_tree, species FROM trees_species, trees_type WHERE type_id=trees_type.id",
+      "SELECT trees_species.id, type_of_tree, species, type_id FROM trees_species, trees_type WHERE type_id=trees_type.id",
       undef, $attr
   );
 
@@ -436,7 +436,8 @@ sub tree_list {
           tr.status,
           tr.comment,
           (SELECT species FROM trees_species WHERE id=species_id) AS species,
-          (SELECT type_id FROM trees_species WHERE id=species_id) AS type_id
+          (SELECT type_id FROM trees_species WHERE id=species_id) AS type_id,
+          (SELECT type_of_tree FROM trees_type WHERE id=type_id)  AS type_of_tree
           FROM
           trees_tree AS tr
           $WHERE

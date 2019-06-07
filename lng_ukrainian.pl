@@ -1,13 +1,19 @@
 $lang{ID}             = '#',
 $lang{TYPE}           = 'Тип дерева',
+$lang{SORT_OF_TREE}   = 'Сорт дерева',
 $lang{LOGO}           = 'Список дерев',
 $lang{ADD}            = 'Добавити',
 $lang{CHANGE}         = 'Змінити',
 $lang{SPECIES}        = 'Сорт',
 
+$lang{TYPES_LIST}     = 'Список типів',
+$lang{SORTS_LIST}     = 'Список сортів',
+
 $lang{ADD_TYPE}       = 'Добавити тип',
-$lang{TREE}           = 'Загальні дерева',
+$lang{EDIT_TYPE}      = 'Редагувати тип',
+$lang{TREE}           = 'Дерева',
 $lang{ADD_SORT}       = 'Добавити сорт',
+$lang{EDIT_SORT}      = 'Редагувати сорт',
 $lang{ADD_TREE}       = 'Добавити дерево',
 $lang{SEARCH_TREE}    = 'Пошук дерева',
 
@@ -18,7 +24,8 @@ $lang{SEARCH}         = 'Пошук',
 $lang{CLEAR}          = 'Очистити',
 $lang{SUC_SORT}       = 'Сорт добавлено в список',
 $lang{DEL_SORT}       = 'Сорт видалено з списка',
-$lang{EDIT_SORT}      = 'Ви намагаєтеся змінити данні',
+$lang{EDIT_MSG}       = 'Ви намагаєтеся змінити дані',
+$lang{SUC_EDIT_MSG}   = 'Ви успішно змінили дані',
 $lang{ERROR_TYPE}     = 'Такого типу не існує',
 $lang{ERROR}          = 'Помилка',
 
@@ -33,4 +40,8 @@ $lang{STATUS}         = 'Статус',
 $lang{COMMENT}        = 'Коментар',
 $lang{SPECIES_ID}     = 'Номер на дереві',
 
+$lang{TYPES}          = 'Типи дерев',
+$lang{SORTS}          = 'Сорти дерев',
+
+$lang{DELETE_CONFIRM} = 'Ви дійсно хочете видалити',
 1

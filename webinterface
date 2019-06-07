@@ -20,20 +20,30 @@ sub add_type {
 
   my $Tree = Tree->new($db, $admin, \%conf);
   my $type_list = $Tree->type_list({ COLS_NAME => 1 });
+  my $title = $lang{ADD_TYPE};
 
   if ($FORM{ADD}) {
     $Tree->add_type( {%FORM} );
-    $html->message('info', $lang{ADD_MESSEGES}, $lang{SUC_SORT});
+    $html->message('info', $lang{ADD_MESSEGES}, $lang{SUC_TYPE});
   } elsif ($FORM{del}) {
       $Tree->del_type( {ID => $FORM{del} });
-      $html->message('err', $lang{DEL_MESSEGES}, $lang{DEL_SORT});
+      $html->message('err', $lang{DEL_MESSEGES}, $lang{DEL_TYPE});
   } elsif ($FORM{CHANGE}) {
-      $Tree->type_change(\%FORM);
-      $html->message('warn', $lang{EDIT_MESSEGES}, $lang{EDIT_SORT});
+      $html->message('warn', $lang{EDIT_MESSEGES}, $lang{EDIT_MSG});
+      $title = $lang{EDIT_TYPE};
+  } elsif ($FORM{CHANGE_BTN}) {
+	  $Tree->type_change(\%FORM);
+	  $html->message('info', $lang{EDIT_MESSEGES}, $lang{SUC_EDIT_MSG});
+
   }
 
-  $button_add    = $html->form_input("ADD", $lang{ADD},       {TYPE => "submit"});
-  $button_change = $html->form_input("CHANGE", $lang{CHANGE}, {TYPE => "submit"});
+  if(!$FORM{CHANGE}){
+	  $button_add    = $html->form_input("ADD", $lang{ADD},       {TYPE => "submit"});
+  }
+  if($FORM{CHANGE}){
+	  $button_change = $html->form_input("CHANGE_BTN", $lang{CHANGE}, {TYPE => "submit"});
+      
+  }
 
   ($table, $type_list) = result_former({
     INPUT_DATA          => $Tree,
@@ -49,7 +59,7 @@ sub add_type {
     SKIP_PAGES          => 1,
     TABLE               => {
       width             => '100%',
-      caption           => "$lang{LOGO}",
+      caption           => "$lang{TYPES_LIST}",
       qs                => $pages_qs,
       pages             => 500,
       ID                => 'TREES_ID',
@@ -63,6 +73,7 @@ sub add_type {
       ADD_TREE      => $html->form_input('TYPE_OF_TREE', $FORM{type_of_tree}),
       BUTTON_ADD    => $button_add,
       BUTTON_CHANGE => $button_change,
+      TITLE         => $title,
     });
 
   foreach my $line (@$type_list) {
@@ -75,8 +86,9 @@ sub add_type {
           "index=$index&id=$line->{id}&type_of_tree=$line->{type_of_tree}&CHANGE=1"._translate($line->{position}),
           { class => 'change' } ));
       push @fields_array, ($html->button($lang{DELETE},
-          "index=$index&del=$line->{id}&type_of_tree=$line->{type_of_tree}"._translate($line->{position}),
-          { class => 'del' } ));
+          "index=$index&del=$line->{id}"._translate($line->{position}),
+          { CONFIRM => $lang{DELETE_CONFIRM} . " " . $line->{type_of_tree} . "?",
+			class => 'del' } ));
 
       $table->addrow(@fields_array);
     }
@@ -92,20 +104,29 @@ sub add_sort {
   my $species_list     = $Tree->species_list({ COLS_NAME => 1} );
   my @files            = ();
 
-  $button_add    = $html->form_input("ADD",    $lang{ADD},    {TYPE => "submit"} );
-  $button_change = $html->form_input("CHANGE", $lang{CHANGE}, {TYPE => "submit"} );
+  my $title = $lang{ADD_SORT};
+
+  if(!$FORM{CHANGE}){
+	  $button_add    = $html->form_input("ADD",    $lang{ADD},    {TYPE => "submit"} );
+  }
+  if($FORM{CHANGE}){
+	  $button_change = $html->form_input("CHANGE_BTN", $lang{CHANGE}, {TYPE => "submit"} );
+  }
 
   if ($FORM{ADD} && $FORM{TYPE_ID} == 0) {
     $html->message('warn', $lang{ERROR}, $lang{ERROR_TYPE});
   } elsif ($FORM{del} ) {
       $Tree->del_species({ID => $FORM{del} });
-      $html->message('err', $lang{DEL_MESSEGES}, $lang{DEL_TYPE} );
+      $html->message('err', $lang{DEL_MESSEGES}, $lang{DEL_SORT} );
   } elsif ($FORM{CHANGE} ) {
-      $Tree->species_change(\%FORM);
-      $html->message('warn', $lang{EDIT_MESSEGES}, $lang{EDIT_MESSEGES} );
+      $html->message('warn', $lang{EDIT_MESSEGES}, $lang{EDIT_MSG} );
+      $title = $lang{EDIT_SORT};
   } elsif ($FORM{ADD} ) {
     $Tree->add_species({%FORM} );
-    $html->message('info', $lang{ADD_MESSEGES}, $lang{SUC_TYPE} );
+    $html->message('info', $lang{ADD_MESSEGES}, $lang{SUC_SORT} );
+  } elsif ($FORM{CHANGE_BTN}){
+	$Tree->species_change(\%FORM);
+    $html->message('info', $lang{EDIT_MESSEGES}, $lang{SUC_EDIT_MSG});
   }
 
     push @files, "--";
@@ -131,7 +152,7 @@ sub add_sort {
     SKIP_PAGES          => 1,
     TABLE               => {
       width             => '100%',
-      caption           => "$lang{LOGO}",
+      caption           => "$lang{SORTS_LIST}",
       qs                => $pages_qs,
       pages             => 500,
       ID                => 'TREES_ID',
@@ -143,7 +164,7 @@ sub add_sort {
     TYPE_TREE        =>  $html->form_select(
       'TYPE_ID',
       {
-          SELECTED    => $FORM{TYPE_ID},
+          SELECTED    => $FORM{TYPE_ID_EDIT},
           SEL_LIST    => translate_list($Tree->type_list({ COLS_NAME => 1 }),
               'type_of_tree'
           ),
@@ -156,23 +177,24 @@ sub add_sort {
     INDEX            => $index,
     BUTTON_ADD       => $button_add,
     BUTTON_CHANGE    => $button_change,
-    ADD_TREE_SORT    => $html->form_input('SPECIES', $FORM{SPECIES} ),
+    ADD_TREE_SORT    => $html->form_input('SPECIES', $FORM{SPECIES_EDIT} ),
+    TITLE            => $title,
   });
 
 
   foreach my $line (@$species_list) {
     my @fields_array = ();
-
     push @fields_array, $line->{"id"};
     push @fields_array, $line->{"type_of_tree"};
     push @fields_array, $line->{"species"};
 
     push @fields_array, ($html->button($lang{CHANGE},
-        "index=$index&ID=$line->{id}&TYPE_ID=$line->{type_id}&SPECIES=$line->{species}&CHANGE=1"._translate($line->{position} ),
+        "index=$index&ID=$line->{id}&TYPE_ID_EDIT=$line->{type_id}&SPECIES_EDIT=$line->{species}&CHANGE=1"._translate($line->{position} ),
         { class => 'change' } ));
     push @fields_array, ($html->button($lang{DELETE},
         "index=$index&del=$line->{id}"._translate($line->{position} ),
-        { class => 'del' } ));
+        { CONFIRM => $lang{DELETE_CONFIRM} . " " . $line->{species} . "?",
+		  class => 'del' } ));
 
     $table->addrow(@fields_array);
   }
@@ -185,10 +207,6 @@ sub add_sort {
 sub search_tree {
   my ($button_search, $button_clear);
 
-    if ($FORM{EDIT}) {
-        $html->message('warn', $lang{EDIT_MESSEGES}, $lang{EDIT_SORT});
-    }
-
   my $Tree          = Tree->new($db, $admin, \%conf);
   my $tree_list     = $Tree->tree_list({
       COLS_NAME  => 1,
@@ -198,34 +216,11 @@ sub search_tree {
       SPECIES_ID => $FORM{SORT},
       STATUS     => $FORM{STATUS},
   });
-
-    my $type_list     = $Tree->type_list({COLS_NAME    => 1});
-    my $sort_list     = $Tree->species_list({COLS_NAME => 1});
-    my @status_tree   = ('Здорове', 'Хворе');
-    my $button_edit   = $html->form_input('DRAW', $lang{EDIT}, {TYPE => 'submit'});
-    my @status_tree   = ('Здорове', 'Хворе');
-    my @type = ();
-    my @sort = ();
-
-    my $style            = "box box-theme collapsed-box";
-
-    # box box-theme collapsed-box
-    # box box-theme
-
-    if($FORM{DRAW}) {
-        # Abills::Base::_bp("", \%FORM);
-        $Tree->tree_change({
-            ID         => $FORM{ID},
-            EXT_ID     => $FORM{EXT_ID},
-            SPECIES_ID => $FORM{SORT},
-            AGE        => $FORM{AGE},
-            STATUS     => $FORM{STATUS_EDIT},
-            COMMENT    => $FORM{COMMENTS},
-        });
-        $style = "box box-theme collapsed-box";
-    } elsif ($FORM{EDIT}) {
-        $style = "box box-theme";
-    }
+  my $type_list     = $Tree->type_list({COLS_NAME    => 1});
+  my $sort_list     = $Tree->species_list({COLS_NAME => 1});
+  my @status_tree   = ('Здорове', 'Хворе');
+  my @type = ();
+  my @sort = ();
 
     $button_search = $html->form_input("SEARCH", $lang{SEARCH}, {TYPE => "submit"} );
     $button_clear  = $html->form_input("CLEAR",  $lang{CLEAR},  {TYPE => "submit"} );
@@ -300,59 +295,24 @@ sub search_tree {
     DATE_CHANGE   => $html->form_input('DATE_CHANGE', $FORM{DATE_CHANGE}),
     BUTTON_SEARCH => $button_search,
     BUTTON_CLEAR  => $button_clear,
+    PLACE         => "Парк чайковського",
   });
 
+    if ($FORM{CHANGE}) {
+        edit_tree();
+    }
 
-    $html->tpl_show(_include('main_page_five', 'Tree'), {
-        ID            => $FORM{ID},
-        INDEX         => $index,
-        TYPE          => $html->form_select(
-            'TYPE',
-            {
-                SELECTED    => $FORM{TYPE},
-                SEL_LIST    => translate_list($Tree->type_list({ COLS_NAME => 1 },
-                    'type_of_tree')),
-                SEL_KEY     => 'id',
-                SEL_VALUE   => 'type_of_tree',
-                NO_ID       => 1,
-                SEL_OPTIONS => { '' => '--' },
-            }),
-        SORT          => $html->form_select(
-            'SORT',
-            {
-                SELECTED    => $FORM{SORT},
-                SEL_LIST    => translate_list($Tree->species_list({ COLS_NAME => 1 },
-                    'species')),
-                SEL_KEY     => 'id',
-                SEL_VALUE   => 'species',
-                NO_ID       => 1,
-                SEL_OPTIONS => { '' => '--' },
-            }),
-        ONE_NUMB_YEAR => $html->form_input('AGE', $FORM{AGE}),
-        STATUS        => $html->form_select(
-            'STATUS_EDIT',
-            {
-                SELECTED    => $FORM{STATUS_EDIT},
-                SEL_ARRAY   => \@status_tree,
-                SEL_OPTIONS => { '' => '--' },
-                NO_ID       => 1,
-            }),
-        NUMBER_TREE   => $html->form_input('EXT_ID', $FORM{EXT_ID}),
-        BUTTON_EDIT   => $button_edit,
-        STYLE_BOX     => $style,
-    });
   ($table, $tree_list) = result_former( {
     INPUT_DATA          => $Tree,
     LIST                => $tree_list,
-    BASE_FIELDS         => 9,
+    BASE_FIELDS         => 8,
     SKIP_USER_TITLE     => 1,
-    DEFAULT_FIELDS      => 'id, ext_id, species_id, species, age,
+    DEFAULT_FIELDS      => 'id, ext_id, species_id, age,
                             coordx, coordy, status, comment',
     EXT_TITLES          => {
       id                     => $lang{ID},
       ext_id                 => $lang{EXT_ID},
       species_id             => $lang{SPECIES},
-        species              => $lang{TYPE},
       age                    => $lang{AGE},
       coordx                 => $lang{COORDX},
       coordy                 => $lang{COORDY},
@@ -381,11 +341,9 @@ sub search_tree {
         push @fields_array, $line->{"coordy"};
         push @fields_array, $line->{"status"};
         push @fields_array, $line->{"comment"};
-        push @fields_array, $line->{"type_of_tree"};
 
-
-      push @fields_array, ($html->button($lang{CHANGE},
-          "index=$index&ID=$line->{id}&TYPE_TREE=$line->{type_of_tree}&EXT_ID=$line->{ext_id}&SPECIES=$line->{species}&AGE=$line->{age}&COORDX=$line->{coordx}&COORDY=$line->{coordy}&STATUS_EDIT=$line->{status}&COMMENT=$line->{comment}&EDIT=1"._translate($line->{position} ),
+        push @fields_array, ($html->button($lang{CHANGE},
+          "index=$index&ID=$line->{id}&EXT_ID=$line->{ext_id}&SPECIES=$line->{species}&AGE=$line->{age}&COORDX=$line->{coordx}&COORDY=$line->{coordy}&STATUS=$line->{status}&COMMENT=$line->{comment}&CHANGE=1"._translate($line->{position} ),
           { class => 'change' } ));
         push @fields_array, ($html->button($lang{DELETE},
           "index=$index&del=$line->{id}"._translate($line->{position} ),
@@ -400,8 +358,63 @@ sub search_tree {
 }
 
 sub edit_tree {
+    my $Tree          = Tree->new($db, $admin, \%conf);
+    my $button_edit = $html->form_input('EDIT', $lang{EDIT}, {TYPE => 'submit'});
+    my @status_tree   = ('Здорове', 'Хворе');
 
-
+    if($FORM{CHANGE}) {
+        $html->message('warn', $lang{EDIT_MESSEGES}, $lang{EDIT_SORT});
+        $Tree->tree_change({
+            ID         => $FORM{ID},
+            EXT_ID     => $FORM{EXT_ID},
+            SPECIES_ID => $FORM{SPECIES},
+            AGE        => $FORM{AGE},
+            STATUS     => $FORM{STATUS},
+            COMMENT    => $FORM{COMMENT}
+        });
+    }
+    # $Tree->tree_change({
+    #     ID         => 14,
+    #     AGE        => 10000,
+    # });
+    $html->tpl_show(_include('main_page_five', 'Tree'), {
+        ID            => $FORM{ID},
+        INDEX         => $index,
+        TYPE          => $html->form_select(
+            'TYPE',
+            {
+                    SELECTED    => $FORM{TYPE},
+                    SEL_LIST    => translate_list($Tree->type_list({ COLS_NAME => 1 },
+                        'type_of_tree')),
+                    SEL_KEY     => 'id',
+                    SEL_VALUE   => 'type_of_tree',
+                    NO_ID       => 1,
+                    SEL_OPTIONS => { '' => '--' },
+            }),
+        SORT          => $html->form_select(
+            'SORT',
+            {
+                    SELECTED    => $FORM{SORT},
+                    SEL_LIST    => translate_list($Tree->species_list({ COLS_NAME => 1 },
+                        'species')),
+                    SEL_KEY     => 'id',
+                    SEL_VALUE   => 'species',
+                    NO_ID       => 1,
+                    SEL_OPTIONS => { '' => '--'},
+            }),
+        ONE_NUMB_YEAR => $html->form_input('AGE', $FORM{AGE}),
+        STATUS        => $html->form_select(
+            'STATUS',
+            {
+                    SELECTED     => $FORM{STATUS},
+                    SEL_ARRAY    => \@status_tree,
+                    SEL_OPTIONS  => { '' => '--'},
+                    NO_ID        => 1,
+            }),
+        COMMENTS      => $html->form_input('COMMENT', $FORM{COMMENTS}),
+        NUMBER_TREE   => $html->form_input('EXT_ID', $FORM{EXT_ID}),
+        BUTTON_EDIT   => $button_edit,
+    });
 
     return 1;
 }
