@@ -11,7 +11,7 @@
 #### Установка:
 Створити таблицю в базі:
 ```
-# mysql --default-character-set=utf8 -D abills < db/Employees.sql
+# mysql --default-character-set=utf8 -D abills < db/Tree.sql
 ```
 В файлі **config.pl**:
 ```
