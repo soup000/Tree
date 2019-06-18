@@ -351,7 +351,7 @@ sub search_tree {
         SORT          => $html->form_select(
             'SORT',
             {
-                SELECTED    => $FORM{SORT},
+                SELECTED    => $FORM{SPECIES_ID},
                 SEL_LIST    => translate_list($Tree->species_list({ COLS_NAME => 1 },
                     'species')),
                 SEL_KEY     => 'id',
@@ -373,7 +373,7 @@ sub search_tree {
         STYLE_BOX     => $style,
     });
   ($table, $tree_list) = result_former( {
-    INPUT_DATA          => $Tree,
+		  #INPUT_DATA          => $Tree,
     LIST                => $tree_list,
     BASE_FIELDS         => 9,
     SKIP_USER_TITLE     => 1,
@@ -407,16 +407,16 @@ sub search_tree {
         push @fields_array, $line->{"id"};
         push @fields_array, $line->{"ext_id"};
         push @fields_array, $line->{"species"};
+        push @fields_array, $line->{"type_of_tree"};
         push @fields_array, $line->{"age"};
         push @fields_array, $line->{"coordx"};
         push @fields_array, $line->{"coordy"};
         push @fields_array, $line->{"status"};
         push @fields_array, $line->{"comment"};
-        push @fields_array, $line->{"type_of_tree"};
 
 
       push @fields_array, ($html->button($lang{CHANGE},
-          "index=$index&ID=$line->{id}&TYPE_TREE=$line->{type_of_tree}&EXT_ID=$line->{ext_id}&SPECIES=$line->{species}&AGE=$line->{age}&COORDX=$line->{coordx}&COORDY=$line->{coordy}&STATUS_EDIT=$line->{status}&COMMENT=$line->{comment}&EDIT=1"._translate($line->{position} ),
+          "index=$index&ID=$line->{id}&TYPE_TREE=$line->{type_of_tree}&EXT_ID=$line->{ext_id}&SPECIES_ID=$line->{species_id}&AGE=$line->{age}&COORDX=$line->{coordx}&COORDY=$line->{coordy}&STATUS_EDIT=$line->{status}&COMMENT=$line->{comment}&EDIT=1"._translate($line->{position} ),
           { class => 'change' } ));
         push @fields_array, ($html->button($lang{DELETE},
           "index=$index&del=$line->{id}"._translate($line->{position} ),
