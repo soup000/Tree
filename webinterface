@@ -211,30 +211,10 @@ sub search_tree {
         $html->message('warn', $lang{EDIT_MESSEGES}, $lang{EDIT_SORT});
     }
 
+  my $style            = "box box-theme collapsed-box";
+  
   my $Tree          = Tree->new($db, $admin, \%conf);
-  my $tree_list     = $Tree->tree_list({
-      COLS_NAME  => 1,
-      MIN_AGE    => $FORM{MIN_AGE},
-      MAX_AGE    => $FORM{MAX_AGE},
-      TYPE_ID    => $FORM{TYPE},
-      SPECIES_ID => $FORM{SORT},
-      STATUS     => $FORM{STATUS},
-  });
-
-    my $type_list     = $Tree->type_list({COLS_NAME    => 1});
-    my $sort_list     = $Tree->species_list({COLS_NAME => 1});
-    my @status_tree   = ('Здорове', 'Хворе');
-    my $button_edit   = $html->form_input('DRAW', $lang{EDIT}, {TYPE => 'submit'});
-    my @status_tree   = ('Здорове', 'Хворе');
-    my @type = ();
-    my @sort = ();
-
-    my $style            = "box box-theme collapsed-box";
-
-    # box box-theme collapsed-box
-    # box box-theme
-
-    if($FORM{DRAW}) {
+  if($FORM{DRAW}) {
         # Abills::Base::_bp("", \%FORM);
         $Tree->tree_change({
             ID         => $FORM{ID},
@@ -248,6 +228,35 @@ sub search_tree {
     } elsif ($FORM{EDIT}) {
         $style = "box box-theme";
     }
+  my $tree_list;
+  if(!$FORM{DRAW}){
+  $tree_list     = $Tree->tree_list({
+      COLS_NAME  => 1,
+      MIN_AGE    => $FORM{MIN_AGE},
+      MAX_AGE    => $FORM{MAX_AGE},
+      TYPE_ID    => $FORM{TYPE},
+      SPECIES_ID => $FORM{SORT},
+      STATUS     => $FORM{STATUS},
+  });}
+  else{
+      $tree_list     = $Tree->tree_list({
+      COLS_NAME  => 1,
+      });
+  };
+
+    my $type_list     = $Tree->type_list({COLS_NAME    => 1});
+    my $sort_list     = $Tree->species_list({COLS_NAME => 1});
+    my @status_tree   = ('Здорове', 'Хворе');
+    my $button_edit   = $html->form_input('DRAW', $lang{EDIT}, {TYPE => 'submit'});
+    my @status_tree   = ('Здорове', 'Хворе');
+    my @type = ();
+    my @sort = ();
+
+
+    # box box-theme collapsed-box
+    # box box-theme
+
+    
 
     $button_search = $html->form_input("SEARCH", $lang{SEARCH}, {TYPE => "submit"} );
     $button_clear  = $html->form_input("CLEAR",  $lang{CLEAR},  {TYPE => "submit"} );
@@ -417,13 +426,6 @@ sub search_tree {
   }
 
   print $table->show();
-
-    return 1;
-}
-
-sub edit_tree {
-
-
 
     return 1;
 }
